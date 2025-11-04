@@ -19,7 +19,7 @@
   });
 
   const participant_info = {
-    type: surveyHtmlForm,
+    type: surveyHtmlForm,  // ✅ 修正：モジュール変数を指定
     preamble: "<h3>参加者情報</h3><p>以下の項目を入力してください。</p>",
     html: `
       <p>ID: <input name="ID" type="text" required></p>
@@ -30,7 +30,7 @@
   };
 
   const instruction = {
-    type: htmlKeyboardResponse,
+    type: htmlKeyboardResponse, // ✅ 修正：同様にモジュール名を使用
     stimulus: `
       <p>以下の単語から感じる「明るさ」「暗さ」を、a〜g のいずれかで答えてください。</p>
       <p>
@@ -51,10 +51,10 @@
   const trials = words.map(word => ({
     type: htmlKeyboardResponse,
     stimulus: `<h2>${word}</h2><p>a〜g のキーで答えてください。</p>`,
-    choices: ["a", "b", "c", "d", "e", "f", "g"],
-    data: { word: word },
+    choices: ["a","b","c","d","e","f","g"],
+    data: {word: word},
     on_finish: data => {
-      data.response = jsPsych.pluginAPI.convertKeyCodeToKeyCharacter(data.key_press);
+      data.response = jsPsychModule.pluginAPI.convertKeyCodeToKeyCharacter(data.key_press);
     }
   }));
 
