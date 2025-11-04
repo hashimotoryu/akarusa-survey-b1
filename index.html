@@ -11,27 +11,23 @@
 <body></body>
 
 <script>
-// === jsPsych初期化 ===
 const jsPsych = initJsPsych({
   on_finish: function(){
-    // 終了時にCSVファイルを自動ダウンロード
     jsPsych.data.get().localSave('csv', 'brightness_survey_results.csv');
   }
 });
 
-// === 1. 被験者情報入力 ===
 const participant_info = {
   type: jsPsychSurveyHtmlForm,
   preamble: '<h3>参加者情報</h3><p>以下の項目を入力してください。</p>',
   html: `
     <p>ID: <input name="ID" type="text" required></p>
-    <p>性別: <input name="sex" type="text" placeholder="例：男性 / 女性 / その他" required></p>
+    <p>性別: <input name="sex" type="text" required></p>
     <p>年齢: <input name="age" type="number" required></p>
   `,
   button_label: '次へ'
 };
 
-// === 2. 説明 ===
 const instruction = {
   type: jsPsychHtmlKeyboardResponse,
   stimulus: `
@@ -49,7 +45,6 @@ const instruction = {
   choices: [' ']
 };
 
-// === 3. 評価する単語リスト ===
 const words = ['太陽', '青空', 'ろうそく', 'カラス', '火花'];
 
 const trials = words.map(word => {
@@ -64,7 +59,6 @@ const trials = words.map(word => {
   };
 });
 
-// === 4. 終了メッセージ ===
 const ending = {
   type: jsPsychHtmlKeyboardResponse,
   stimulus: `<p>調査は以上です。ご協力ありがとうございました。</p>
@@ -73,8 +67,6 @@ const ending = {
   choices: [' ']
 };
 
-// === タイムライン実行 ===
 jsPsych.run([participant_info, instruction, ...trials, ending]);
-
 </script>
 </html>
