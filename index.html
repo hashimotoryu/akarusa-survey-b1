@@ -1,72 +1,73 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>明るさ印象調査</title>
-  <script src="https://unpkg.com/jspsych@7.3.0"></script>
-  <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@1.1.2"></script>
-  <script src="https://unpkg.com/@jspsych/plugin-survey-html-form@1.1.2"></script>
   <link href="https://unpkg.com/jspsych@7.3.0/css/jspsych.css" rel="stylesheet" />
 </head>
 <body></body>
 
-<script>
-const jsPsych = initJsPsych({
-  on_finish: function(){
-    jsPsych.data.get().localSave('csv', 'brightness_survey_results.csv');
-  }
-});
+<script type="module">
+  import jsPsychModule from "https://unpkg.com/jspsych@7.3.0/dist/index.js";
+  import htmlKeyboardResponse from "https://unpkg.com/@jspsych/plugin-html-keyboard-response@1.1.2/dist/index.js";
+  import surveyHtmlForm from "https://unpkg.com/@jspsych/plugin-survey-html-form@1.1.2/dist/index.js";
 
-const participant_info = {
-  type: jsPsychSurveyHtmlForm,
-  preamble: '<h3>参加者情報</h3><p>以下の項目を入力してください。</p>',
-  html: `
-    <p>ID: <input name="ID" type="text" required></p>
-    <p>性別: <input name="sex" type="text" required></p>
-    <p>年齢: <input name="age" type="number" required></p>
-  `,
-  button_label: '次へ'
-};
+  const jsPsych = jsPsychModule.initJsPsych({
+    on_finish: () => {
+      jsPsych.data.get().localSave("csv", "brightness_survey_results.csv");
+    }
+  });
 
-const instruction = {
-  type: jsPsychHtmlKeyboardResponse,
-  stimulus: `
-  <p>以下の単語から感じる「明るさ」「暗さ」を、a〜g のいずれかで答えてください。</p>
-  <p>
-    a: とても暗い<br>
-    b: まあまあ暗い<br>
-    c: どちらかというと暗い<br>
-    d: 明るくも暗くもない<br>
-    e: まあまあ明るい<br>
-    f: どちらかというと明るい<br>
-    g: とても明るい
-  </p>
-  <p>スペースキーを押すと開始します。</p>`,
-  choices: [' ']
-};
+  const participant_info = {
+    type: surveyHtmlForm,
+    preamble: "<h3>参加者情報</h3><p>以下の項目を入力してください。</p>",
+    html: `
+      <p>ID: <input name="ID" type="text" required></p>
+      <p>性別: <input name="sex" type="text" required></p>
+      <p>年齢: <input name="age" type="number" required></p>
+    `,
+    button_label: "次へ"
+  };
 
-const words = ['太陽', '青空', 'ろうそく', 'カラス', '火花'];
+  const instruction = {
+    type: htmlKeyboardResponse,
+    stimulus: `
+      <p>以下の単語から感じる「明るさ」「暗さ」を、a〜g のいずれかで答えてください。</p>
+      <p>
+        a: とても暗い<br>
+        b: まあまあ暗い<br>
+        c: どちらかというと暗い<br>
+        d: 明るくも暗くもない<br>
+        e: まあまあ明るい<br>
+        f: どちらかというと明るい<br>
+        g: とても明るい
+      </p>
+      <p>スペースキーを押すと開始します。</p>`,
+    choices: [" "]
+  };
 
-const trials = words.map(word => {
-  return {
-    type: jsPsychHtmlKeyboardResponse,
+  const words = ["太陽", "青空", "ろうそく", "カラス", "火花"];
+
+  const trials = words.map(word => ({
+    type: htmlKeyboardResponse,
     stimulus: `<h2>${word}</h2><p>a〜g のキーで答えてください。</p>`,
-    choices: ['a','b','c','d','e','f','g'],
-    data: {word: word},
-    on_finish: function(data){
+    choices: ["a", "b", "c", "d", "e", "f", "g"],
+    data: { word: word },
+    on_finish: data => {
       data.response = jsPsych.pluginAPI.convertKeyCodeToKeyCharacter(data.key_press);
     }
+  }));
+
+  const ending = {
+    type: htmlKeyboardResponse,
+    stimulus: `
+      <p>調査は以上です。ご協力ありがとうございました。</p>
+      <p>データが自動的にダウンロードされます。</p>
+      <p>スペースキーを押すと終了します。</p>
+    `,
+    choices: [" "]
   };
-});
 
-const ending = {
-  type: jsPsychHtmlKeyboardResponse,
-  stimulus: `<p>調査は以上です。ご協力ありがとうございました。</p>
-             <p>データが自動的にダウンロードされます。</p>
-             <p>スペースキーを押すと終了します。</p>`,
-  choices: [' ']
-};
-
-jsPsych.run([participant_info, instruction, ...trials, ending]);
+  jsPsych.run([participant_info, instruction, ...trials, ending]);
 </script>
 </html>
